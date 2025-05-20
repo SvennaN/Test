@@ -24,6 +24,7 @@ export default function Dashboard() {
         <TaskBoard />
         <Journal />
         <PomodoroTimer />
+
       </div>
     </div>
   );
