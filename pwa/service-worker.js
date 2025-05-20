@@ -1,9 +1,10 @@
-const CACHE_NAME = 'journal-cache-v1';
+const CACHE_NAME = 'journal-cache-v2';
 const FILES_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/styles.css',
-  '/app.js'
+  './',
+  './index.html',
+  './styles.css',
+  './app.js'
+
 ];
 
 self.addEventListener('install', event => {
@@ -17,4 +18,3 @@ self.addEventListener('fetch', event => {
     caches.match(event.request).then(response => response || fetch(event.request))
   );
 });
-

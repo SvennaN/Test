@@ -2,51 +2,67 @@ body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: #f0f0f0;
+    background: #f5f6fa;
 }
 header {
-    background: #333;
+    background: #4a90e2;
+
     color: white;
     padding: 1rem;
     text-align: center;
 }
-main {
+.container {
     padding: 1rem;
+    max-width: 900px;
+    margin: 0 auto;
+}
+.quote {
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+.prompt, .affirmation, .streak {
+    margin: 0.5rem 0;
+
 }
 textarea {
     width: 100%;
     height: 100px;
+    padding: 0.5rem;
 }
-button {
+.controls {
     margin-top: 0.5rem;
 }
-ul {
+.preview, .entry-image {
+    max-width: 100%;
+    margin-top: 0.5rem;
+}
+.entries ul, .tasks ul {
     list-style: none;
     padding: 0;
 }
-li {
+.entries li, .tasks li {
+
     background: white;
     margin-bottom: 0.5rem;
     padding: 0.5rem;
     border-radius: 4px;
 }
-
-.media-controls button {
-    margin-right: 0.5rem;
+.board {
+    display: flex;
+    gap: 1rem;
 }
-
-#audio-playback {
-    display: block;
-    margin-top: 0.5rem;
+.column {
+    flex: 1;
+    background: #e3e6f0;
+    padding: 0.5rem;
+    border-radius: 4px;
 }
-
-.entry-image {
-    max-width: 100%;
-    margin-top: 0.5rem;
+.column h3 {
+    text-align: center;
 }
-
-#streak {
-    font-weight: bold;
-    margin-top: 0.5rem;
+.column ul {
+    min-height: 50px;
 }
-
+.progress {
+    margin: 0.5rem 0;
+}

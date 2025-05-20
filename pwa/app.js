@@ -1,200 +1,207 @@
-const quotes = [
-    "Success is no accident.",
-    "Victory loves preparation.",
-    "Believe you can and you're halfway there."
-];
+const { useState, useEffect } = React;
 
-// Journal prompts used to inspire daily entries
-const prompts = [
-    "What went well today?",
-    "Did you face any challenges?",
-    "What are you grateful for?",
-    "How will you improve tomorrow?"
-];
+function App() {
+    const quotes = [
+        "Success is no accident.",
+        "Victory loves preparation.",
+        "Believe you can and you're halfway there.",
+        "Small steps every day lead to big results.",
+    ];
 
-let mediaRecorder;
-let recordedChunks = [];
-let currentAudio = null;
-let currentImage = null;
+    const prompts = [
+        "What went well today?",
+        "Did you face any challenges?",
+        "What are you grateful for?",
+        "How will you improve tomorrow?",
+    ];
 
-// Placeholder encryption routines. Replace with real AES if needed.
-function encrypt(text) {
-    return text;
-}
+    const affirmations = [
+        "You are on the right track.",
+        "Keep pushing, progress is near.",
+        "Your consistency builds strength.",
+        "Every entry counts toward your goal.",
+    ];
 
-function decrypt(text) {
-    return text;
-}
+    const [quote, setQuote] = useState('');
+    const [prompt, setPrompt] = useState('');
+    const [affirmation, setAffirmation] = useState('');
 
+    const [entries, setEntries] = useState([]);
+    const [entryText, setEntryText] = useState('');
+    const [mood, setMood] = useState('neutral');
+    const [currentAudio, setCurrentAudio] = useState(null);
+    const [currentImage, setCurrentImage] = useState(null);
+    const [mediaRecorder, setMediaRecorder] = useState(null);
+    const [recordedChunks, setRecordedChunks] = useState([]);
+    const [streak, setStreak] = useState(0);
 
-function randomQuote() {
-    const q = quotes[Math.floor(Math.random() * quotes.length)];
-    document.getElementById('quote').textContent = q;
-}
+    const [tasks, setTasks] = useState({ todo: [], doing: [], done: [] });
+    const [taskText, setTaskText] = useState('');
 
-function showPrompt() {
-    const p = prompts[Math.floor(Math.random() * prompts.length)];
-    document.getElementById('prompt').textContent = p;
-}
+    useEffect(() => {
+        setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
+        setPrompt(prompts[Math.floor(Math.random() * prompts.length)]);
+        const storedEntries = JSON.parse(localStorage.getItem('entries') || '[]');
+        const storedTasks = JSON.parse(localStorage.getItem('tasks') || '{"todo":[],"doing":[],"done":[]}');
+        setEntries(storedEntries);
+        setTasks(storedTasks);
+    }, []);
 
-function startRecording() {
-    recordedChunks = [];
-    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.ondataavailable = e => recordedChunks.push(e.data);
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                currentAudio = reader.result;
-                const audioEl = document.getElementById('audio-playback');
-                audioEl.src = currentAudio;
-                audioEl.style.display = 'block';
+    useEffect(() => {
+        localStorage.setItem('entries', JSON.stringify(entries));
+        updateStreak(entries);
+    }, [entries]);
+
+    useEffect(() => {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }, [tasks]);
+
+    function updateStreak(list) {
+        if (list.length === 0) { setStreak(0); return; }
+        let s = 1;
+        let prev = new Date(list[0].date);
+        for (let i = 1; i < list.length; i++) {
+            const cur = new Date(list[i].date);
+            const diff = (prev - cur) / (24 * 60 * 60 * 1000);
+            if (diff > 1.5) break;
+            s++;
+            prev = cur;
+        }
+        setStreak(s);
+    }
+
+    function startRecording() {
+        setRecordedChunks([]);
+        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+            const rec = new MediaRecorder(stream);
+            rec.ondataavailable = e => setRecordedChunks(chunks => [...chunks, e.data]);
+            rec.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onloadend = () => setCurrentAudio(reader.result);
+                reader.readAsDataURL(blob);
             };
-            reader.readAsDataURL(blob);
+            rec.start();
+            setMediaRecorder(rec);
+        });
+    }
+
+    function stopRecording() {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            mediaRecorder.stop();
+        }
+    }
+
+    function handleImageUpload(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onloadend = () => setCurrentImage(reader.result);
+        reader.readAsDataURL(file);
+    }
+
+    function saveEntry() {
+        if (!entryText && !currentAudio && !currentImage) return;
+        const entry = {
+            text: entryText,
+            date: new Date().toISOString(),
+            mood,
+            audio: currentAudio,
+            image: currentImage
         };
-        mediaRecorder.start();
-    });
-}
-
-function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-    }
-}
-
-function handleImageUpload(e) {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-        currentImage = reader.result;
-        const img = document.getElementById('image-preview');
-        img.src = currentImage;
-        img.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-}
-
-function saveEntry() {
-    const entry = document.getElementById('entry').value.trim();
-    if (!entry && !currentAudio && !currentImage) return;
-
-    const entries = JSON.parse(localStorage.getItem('entries') || '[]');
-    entries.unshift({
-        text: encrypt(entry),
-        date: new Date().toISOString(),
-        audio: currentAudio,
-        image: currentImage
-    });
-    localStorage.setItem('entries', JSON.stringify(entries));
-
-    document.getElementById('entry').value = '';
-    currentAudio = null;
-    currentImage = null;
-    document.getElementById('audio-playback').style.display = 'none';
-    document.getElementById('image-preview').style.display = 'none';
-    showPrompt();
-    renderEntries();
-    updateStreak();
-
-}
-
-function renderEntries() {
-    const list = document.getElementById('entry-list');
-    list.innerHTML = '';
-    const entries = JSON.parse(localStorage.getItem('entries') || '[]');
-    entries.forEach(e => {
-        const li = document.createElement('li');
-        const text = document.createElement('div');
-        text.textContent = new Date(e.date).toLocaleString() + ': ' + decrypt(e.text);
-        li.appendChild(text);
-
-        if (e.image) {
-            const img = document.createElement('img');
-            img.src = e.image;
-            img.className = 'entry-image';
-            li.appendChild(img);
-        }
-
-        if (e.audio) {
-            const audio = document.createElement('audio');
-            audio.controls = true;
-            audio.src = e.audio;
-            li.appendChild(audio);
-        }
-
-        list.appendChild(li);
-    });
-}
-
-function updateStreak() {
-    const entries = JSON.parse(localStorage.getItem('entries') || '[]');
-    if (entries.length === 0) {
-        document.getElementById('streak').textContent = 'Streak: 0';
-        return;
+        setEntries([entry, ...entries]);
+        setEntryText('');
+        setMood('neutral');
+        setCurrentAudio(null);
+        setCurrentImage(null);
+        setAffirmation(affirmations[Math.floor(Math.random() * affirmations.length)]);
+        setPrompt(prompts[Math.floor(Math.random() * prompts.length)]);
     }
 
-    let streak = 1;
-    let prev = new Date(entries[0].date);
-    for (let i = 1; i < entries.length; i++) {
-        const cur = new Date(entries[i].date);
-        const diff = (prev - cur) / (24 * 60 * 60 * 1000);
-        if (diff > 1.5) break;
-        streak++;
-        prev = cur;
+    function addTask() {
+        if (!taskText.trim()) return;
+        setTasks({ ...tasks, todo: [...tasks.todo, { text: taskText }] });
+        setTaskText('');
     }
-    document.getElementById('streak').textContent = 'Streak: ' + streak;
+
+    function advanceTask(col, index) {
+        const newTasks = { ...tasks };
+        const item = newTasks[col].splice(index, 1)[0];
+        if (col === 'todo') newTasks.doing.push(item);
+        else if (col === 'doing') newTasks.done.push(item);
+        setTasks(newTasks);
+    }
+
+    const totalTasks = tasks.todo.length + tasks.doing.length + tasks.done.length;
+    const progress = totalTasks ? Math.round((tasks.done.length / totalTasks) * 100) : 0;
+
+    return (
+        <div className="container">
+            <header>
+                <h1>Mindful Motion</h1>
+                <p className="quote">{quote}</p>
+            </header>
+            <div className="prompt">{prompt}</div>
+            {affirmation && <div className="affirmation">{affirmation}</div>}
+            <div className="streak">Streak: {streak} day{streak === 1 ? '' : 's'}</div>
+            <section className="journal">
+                <textarea value={entryText} onChange={e => setEntryText(e.target.value)} placeholder="Write your thoughts..."></textarea>
+                <div className="controls">
+                    <select value={mood} onChange={e => setMood(e.target.value)}>
+                        <option value="happy">😊 Happy</option>
+                        <option value="neutral">😐 Neutral</option>
+                        <option value="sad">😔 Sad</option>
+                    </select>
+                    <input type="file" accept="image/*" onChange={handleImageUpload} />
+                    <button onClick={startRecording}>Record</button>
+                    <button onClick={stopRecording}>Stop</button>
+                </div>
+                {currentImage && <img className="preview" src={currentImage} />}
+                {currentAudio && <audio controls src={currentAudio}></audio>}
+                <button onClick={saveEntry}>Save Entry</button>
+            </section>
+            <section className="entries">
+                <h2>Entries</h2>
+                <ul>
+                    {entries.map((e, idx) => (
+                        <li key={idx}>
+                            <div>{new Date(e.date).toLocaleString()} – {e.text}</div>
+                            {e.image && <img className="entry-image" src={e.image} />}
+                            {e.audio && <audio controls src={e.audio}></audio>}
+                        </li>
+                    ))}
+                </ul>
+            </section>
+            <section className="tasks">
+                <h2>Tasks</h2>
+                <div className="task-input">
+                    <input type="text" value={taskText} onChange={e => setTaskText(e.target.value)} placeholder="New task" />
+                    <button onClick={addTask}>Add</button>
+                </div>
+                <div className="progress">Progress: {progress}%</div>
+                <div className="board">
+                    {['todo', 'doing', 'done'].map(col => (
+                        <div key={col} className="column">
+                            <h3>{col === 'todo' ? 'To Do' : col === 'doing' ? 'Doing' : 'Done'}</h3>
+                            <ul>
+                                {tasks[col].map((t, idx) => (
+                                    <li key={idx} onClick={() => advanceTask(col, idx)}>{t.text}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))}
+                </div>
+            </section>
+        </div>
+    );
 }
 
+ReactDOM.render(<App />, document.getElementById('root'));
 
-function addTask() {
-    const taskInput = document.getElementById('task-input');
-    const task = taskInput.value.trim();
-    if (!task) return;
-    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    tasks.push({ text: task, done: false });
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    taskInput.value = '';
-    renderTasks();
-}
-
-function toggleTask(index) {
-    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    tasks[index].done = !tasks[index].done;
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-    renderTasks();
-}
-
-function renderTasks() {
-    const list = document.getElementById('task-list');
-    list.innerHTML = '';
-    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
-    tasks.forEach((t, idx) => {
-        const li = document.createElement('li');
-        li.textContent = t.text;
-        li.style.textDecoration = t.done ? 'line-through' : 'none';
-        li.addEventListener('click', () => toggleTask(idx));
-        list.appendChild(li);
-    });
-}
 
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js');
     });
 }
-
-randomQuote();
-showPrompt();
-renderEntries();
-renderTasks();
-updateStreak();
-
-document.getElementById('save-entry').addEventListener('click', saveEntry);
-document.getElementById('add-task').addEventListener('click', addTask);
-document.getElementById('record-start').addEventListener('click', startRecording);
-document.getElementById('record-stop').addEventListener('click', stopRecording);
-document.getElementById('image-input').addEventListener('change', handleImageUpload);
-
 

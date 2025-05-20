@@ -3,42 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Journal PWA</title>
+    <title>Mindful Motion</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>My Journal</h1>
-        <p id="quote"></p>
-    </header>
-    <main>
-        <section id="journal-section">
-            <h2>New Entry</h2>
-            <p id="prompt"></p>
-            <textarea id="entry" placeholder="Write your thoughts..."></textarea>
-            <div class="media-controls">
-                <button id="record-start">Start Recording</button>
-                <button id="record-stop">Stop Recording</button>
-                <audio id="audio-playback" controls style="display:none"></audio>
-            </div>
-            <input type="file" id="image-input" accept="image/*">
-            <img id="image-preview" class="entry-image" style="display:none">
-            <button id="save-entry">Save Entry</button>
-            <p id="streak"></p>
-
-        </section>
-        <section id="entries">
-            <h2>Entries</h2>
-            <ul id="entry-list"></ul>
-        </section>
-        <section id="tasks-section">
-            <h2>Tasks</h2>
-            <input type="text" id="task-input" placeholder="New task">
-            <button id="add-task">Add Task</button>
-            <ul id="task-list"></ul>
-        </section>
-    </main>
-    <script src="app.js"></script>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel" src="app.js"></script>
 </body>
 </html>
-
