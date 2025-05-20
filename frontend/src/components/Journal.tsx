@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NotebookPen } from 'lucide-react';
+import { Notebook, PenLine, FileText, BookOpenText } from "lucide-react";
 import { motion } from 'framer-motion';
 
 interface Entry {
