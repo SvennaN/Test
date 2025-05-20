@@ -26,6 +26,7 @@ function decrypt(text) {
     return text;
 }
 
+
 function randomQuote() {
     const q = quotes[Math.floor(Math.random() * quotes.length)];
     document.getElementById('quote').textContent = q;
@@ -96,6 +97,7 @@ function saveEntry() {
     showPrompt();
     renderEntries();
     updateStreak();
+
 }
 
 function renderEntries() {
@@ -121,6 +123,7 @@ function renderEntries() {
             audio.src = e.audio;
             li.appendChild(audio);
         }
+
         list.appendChild(li);
     });
 }
@@ -143,6 +146,7 @@ function updateStreak() {
     }
     document.getElementById('streak').textContent = 'Streak: ' + streak;
 }
+
 
 function addTask() {
     const taskInput = document.getElementById('task-input');
@@ -192,4 +196,5 @@ document.getElementById('add-task').addEventListener('click', addTask);
 document.getElementById('record-start').addEventListener('click', startRecording);
 document.getElementById('record-stop').addEventListener('click', stopRecording);
 document.getElementById('image-input').addEventListener('change', handleImageUpload);
+
 

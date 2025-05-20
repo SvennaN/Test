@@ -12,6 +12,7 @@ This repository contains a minimal Progressive Web App (PWA) for journalling and
 - Basic streak counter to track consecutive writing days.
 - Placeholder encryption routines for stored text.
 
+
 ## Usage
 Open `pwa/index.html` in a modern browser. You can optionally serve the folder with a static server to enable service worker features.
 
