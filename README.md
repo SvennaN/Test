@@ -1,26 +1,21 @@
-# Mindful Motion
+# Mindful Motion Fullstack Application
 
-A simple Progressive Web App built with React for journalling and task management. Data is stored locally so the app works offline and can be installed on desktop or mobile devices.
+This repository contains a monorepo setup for the **Mindful Motion** webapp. The app aims to provide a personal productivity dashboard with journalling, task management and AI powered planning tools.
 
-## Features
-- Random motivational quotes and daily prompts
-- Journal entries with mood selection, photos and audio recordings
-- Streak counter and affirmation after saving an entry
-- Kanban board for task management with progress indicator
-- Basic statistics such as task completion rate
-- Works offline thanks to a service worker
+## Project structure
+- `frontend` – React + TypeScript client using Tailwind CSS
+- `backend` – .NET 8 Web API following Clean Architecture principles
+- `docker-compose.yml` – Development environment with PostgreSQL, backend and frontend services
+- `pwa` – Legacy PWA version of the app
 
-## Usage
-Open `pwa/index.html` in a modern browser. Because the app uses React via CDN, you can simply open the file or serve the folder with a static server to enable the service worker.
+## Running locally
+Ensure Docker and Docker Compose are installed, then run:
 
-### Install as App
-Most browsers let you install the PWA via "Add to Home Screen".
+```bash
+docker-compose up --build
+```
 
-## Development
-Key files in the `pwa` directory:
-- `index.html` – loads React and mounts the app
-- `styles.css` – layout and styling
-- `app.js` – React components and application logic
-- `service-worker.js` – offline caching
+The frontend will be available on http://localhost:3000 and the backend on http://localhost:5000.
 
-The project has no build step and can be extended with additional features or API integrations.
+## Deployment
+The frontend can be deployed to Vercel and the backend to Azure App Service.
