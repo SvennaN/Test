@@ -77,7 +77,7 @@ function handleImageUpload(e) {
         img.style.display = 'block';
     };
     reader.readAsDataURL(file);
-}
+
 
 function saveEntry() {
     const entry = document.getElementById('entry').value.trim();
@@ -100,6 +100,7 @@ function saveEntry() {
     showPrompt();
     renderEntries();
     updateStreak();
+
 }
 
 function renderEntries() {
@@ -123,6 +124,7 @@ function renderEntries() {
             audio.src = e.audio;
             li.appendChild(audio);
         }
+
         list.appendChild(li);
     });
 }
@@ -146,6 +148,7 @@ function updateStreak() {
     const streak = computeStreak(entries);
     document.getElementById('streak').textContent = 'Streak: ' + streak;
 }
+
 
 function addTask() {
     const taskInput = document.getElementById('task-input');
@@ -179,6 +182,7 @@ function renderTasks() {
 }
 
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js');
     });
