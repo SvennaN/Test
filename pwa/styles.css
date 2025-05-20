@@ -31,3 +31,22 @@ li {
     border-radius: 4px;
 }
 
+.media-controls button {
+    margin-right: 0.5rem;
+}
+
+#audio-playback {
+    display: block;
+    margin-top: 0.5rem;
+}
+
+.entry-image {
+    max-width: 100%;
+    margin-top: 0.5rem;
+}
+
+#streak {
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+

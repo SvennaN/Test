@@ -14,8 +14,18 @@
     <main>
         <section id="journal-section">
             <h2>New Entry</h2>
+            <p id="prompt"></p>
             <textarea id="entry" placeholder="Write your thoughts..."></textarea>
+            <div class="media-controls">
+                <button id="record-start">Start Recording</button>
+                <button id="record-stop">Stop Recording</button>
+                <audio id="audio-playback" controls style="display:none"></audio>
+            </div>
+            <input type="file" id="image-input" accept="image/*">
+            <img id="image-preview" class="entry-image" style="display:none">
             <button id="save-entry">Save Entry</button>
+            <p id="streak"></p>
+
         </section>
         <section id="entries">
             <h2>Entries</h2>
