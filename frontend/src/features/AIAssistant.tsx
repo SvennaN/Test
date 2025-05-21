@@ -47,6 +47,7 @@ export function AIAssistant() {
         />
         <button className="bg-blue-500 text-white px-2" onClick={sendMessage}>Send</button>
       </div>
+
     </section>
   );
 }

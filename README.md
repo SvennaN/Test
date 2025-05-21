@@ -21,5 +21,6 @@ The frontend will be available on http://localhost:3000 and the backend on http:
 - `POST /api/chat` – echo endpoint for future ChatGPT integration
 - `GET /api/calendar/gmail` – returns example events while Gmail OAuth support is under development
 
+
 ## Deployment
 The frontend can be deployed to Vercel and the backend to Azure App Service.

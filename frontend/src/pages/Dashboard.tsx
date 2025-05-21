@@ -15,6 +15,7 @@ export function Dashboard() {
         <KanbanBoard />
         <Journal />
         <Productivity />
+
       </div>
     </div>
   );
